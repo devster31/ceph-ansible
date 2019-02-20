@@ -120,35 +120,33 @@
     - rbd_client_directory_mode is not defined
       or not rbd_client_directory_mode
 
-- name: resolve device link(s)
-  command: readlink -f {{ item }}
-  changed_when: false
-  with_items: "{{ devices }}"
-  register: devices_prepare_canonicalize
-  when:
-    - devices is defined
-    - inventory_hostname in groups.get(osd_group_name, [])
-    - not osd_auto_discovery|default(False)
-    - osd_scenario|default('dummy') != 'lvm'
+- name: resolve device link(s) and build device list
+  block:
+    - name: resolve device link(s)
+      command: readlink -f {{ item }}
+      changed_when: false
+      check_mode: false
+      loop: "{{ devices | select('search','/dev/disk') | list | unique if osd_scenario|default('dummy') == 'lvm' else devices | unique }}"
+      register: devices_prepare_canonicalize
 
-- name: set_fact build devices from resolved symlinks
-  set_fact:
-    devices: "{{ devices | default([]) + [ item.stdout ] }}"
-  with_items: "{{ devices_prepare_canonicalize.results }}"
-  when:
-    - devices is defined
-    - inventory_hostname in groups.get(osd_group_name, [])
-    - not osd_auto_discovery|default(False)
-    - osd_scenario|default('dummy') != 'lvm'
+    - name: set_fact build devices from resolved symlinks
+      set_fact:
+        resolved_devices: "{{ resolved_devices | default([]) + [ item.stdout ] }}"
+      loop: "{{ devices_prepare_canonicalize.results }}"
+      when:
+        - devices_prepare_canonicalize is defined
 
-- name: set_fact build final devices list
-  set_fact:
-    devices: "{{ devices | reject('search','/dev/disk') | list | unique }}"
+    - name: set_fact build final devices list
+      set_fact:
+        devices: "{{ resolved_devices | reject('search','/dev/disk') | list | unique }}"
+      when:
+        - resolved_devices is defined
+
   when:
     - devices is defined
+    - osd_scenario|default('dummy') != 'lvm' or (devices | select('search','/dev/disk') | list | length > 0)
     - inventory_hostname in groups.get(osd_group_name, [])
     - not osd_auto_discovery|default(False)
-    - osd_scenario|default('dummy') != 'lvm'
 
 - name: set_fact devices generate device list when osd_auto_discovery
   set_fact:
