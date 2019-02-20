@@ -1,27 +1,4 @@
 ---
-- name: check if it is atomic host
-  stat:
-    path: /run/ostree-booted
-  register: stat_ostree
-
-- name: set_fact is_atomic
-  set_fact:
-    is_atomic: "{{ stat_ostree.stat.exists }}"
-
-- name: check if podman binary is present
-  stat:
-    path: /usr/bin/podman
-  register: podman_binary
-
-- name: set_fact is_podman
-  set_fact:
-    is_podman: "{{ podman_binary.stat.exists }}"
-
-- name: set_fact container_binary
-  set_fact:
-    container_binary: "{{ 'podman' if (podman_binary.stat.exists and ansible_distribution == 'Fedora') or (ansible_os_family == 'RedHat' and ansible_distribution_major_version == '8') else 'docker' }}"
-  when: containerized_deployment
-
 # Set ceph_release to ceph_stable by default
 - name: set_fact ceph_release ceph_stable_release
   set_fact:
