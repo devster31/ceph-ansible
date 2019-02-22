@@ -1,4 +1,12 @@
 ---
+- name: check docker executable exists
+  shell: command -v docker
+  changed_when: false
+  register: ceph_docker_exists
+  check_mode: no
+  when:
+    - container_binary == 'docker'
+
 - name: include pre_requisites/prerequisites.yml
   include_tasks: pre_requisites/prerequisites.yml
   when:
@@ -37,4 +45,4 @@
     ceph_version: "{{ ceph_version.stdout.split(' ')[2] }}"
 
 - name: include release.yml
-  include_tasks: release.yml
+  import_tasks: release.yml

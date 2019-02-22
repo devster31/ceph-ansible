@@ -33,6 +33,7 @@
         with_pkg
   when:
     - ansible_distribution == 'Ubuntu'
+    - ceph_docker_exists.rc != 0
 
 # ensure extras enabled for docker
 - name: enable extras on centos
