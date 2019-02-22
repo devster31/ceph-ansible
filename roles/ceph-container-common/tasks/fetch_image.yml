@@ -183,6 +183,7 @@
   until: docker_image.rc == 0
   retries: "{{ docker_pull_retry }}"
   delay: 10
+  check_mode: no
   when:
     - (ceph_docker_dev_image is undefined or not ceph_docker_dev_image)
 
@@ -190,6 +191,7 @@
   command: "{{ container_binary }} inspect {{ ceph_docker_registry }}/{{ ceph_docker_image }}:{{ ceph_docker_image_tag }}"
   changed_when: false
   failed_when: false
+  check_mode: no
   register: image_inspect_after_pull
 
 - name: set_fact image_repodigest_after_pulling

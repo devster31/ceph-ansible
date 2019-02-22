@@ -6,6 +6,7 @@
     header = struct.pack('<hiih',1,int(time.time()),0,len(key)) ;
     print(base64.b64encode(header + key).decode())"
   register: monitor_keyring
+  check_mode: no
   when: cephx
   run_once: true # must run on a single mon only
 

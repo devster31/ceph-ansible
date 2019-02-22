@@ -37,6 +37,7 @@
   with_items:
     - { name: "/etc/ceph/{{ cluster }}.mgr.{{ ansible_hostname }}.keyring", dest: "/var/lib/ceph/mgr/{{ cluster }}-{{ ansible_hostname }}/keyring", copy_key: "{{ True if groups.get(mgr_group_name, []) | length > 0 else False }}" }
     - { name: "/etc/ceph/{{ cluster }}.client.admin.keyring", dest: "/etc/ceph/{{ cluster }}.client.admin.keyring", copy_key: "{{ copy_admin_key }}" }
+  ignore_errors: "{{ ansible_check_mode }}"
   when:
     - cephx
     - groups.get(mgr_group_name, []) | length > 0
@@ -48,5 +49,6 @@
     owner: "{{ ceph_uid if containerized_deployment else 'ceph' }}"
     group: "{{ ceph_uid if containerized_deployment else 'ceph' }}"
     mode: "{{ ceph_keyring_permissions }}"
+  ignore_errors: "{{ ansible_check_mode }}"
   when:
     - cephx
