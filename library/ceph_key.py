@@ -551,7 +551,8 @@ def run_module():
     )
 
     if module.check_mode:
-        return result
+        result['rc'] = 0
+        module.exit_json(**result)
 
     startd = datetime.datetime.now()
 
