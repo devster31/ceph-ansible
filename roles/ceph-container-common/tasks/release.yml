@@ -3,28 +3,32 @@
   set_fact:
     ceph_release: jewel
   when:
-    - ceph_version.split('.')[0] is version_compare('10', '==')
+    - ceph_version is version('10', '>=')
+    - ceph_version is version('11', '<')
 
 - name: set_fact ceph_release kraken
   set_fact:
     ceph_release: kraken
   when:
-    - ceph_version.split('.')[0] is version_compare('11', '==')
+    - ceph_version is version('11', '>=')
+    - ceph_version is version('12', '<')
 
 - name: set_fact ceph_release luminous
   set_fact:
     ceph_release: luminous
   when:
-    - ceph_version.split('.')[0] is version_compare('12', '==')
+    - ceph_version is version('12', '>=')
+    - ceph_version is version('13', '<')
 
 - name: set_fact ceph_release mimic
   set_fact:
     ceph_release: mimic
   when:
-    - ceph_version.split('.')[0] is version_compare('13', '==')
+    - ceph_version is version('13', '>=')
+    - ceph_version is version('14', '<')
 
 - name: set_fact ceph_release nautilus
   set_fact:
     ceph_release: nautilus
   when:
-    - ceph_version.split('.')[0] is version_compare('14', '==')
+    - ceph_version is version('14', '>=')
