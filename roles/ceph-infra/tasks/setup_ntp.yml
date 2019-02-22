@@ -24,6 +24,12 @@
 
 - name: enable the ntp daemon and disable the rest
   block:
+    - name: check ntp on timesyncd is enabled
+      command: dbus-send --system --print-reply=literal --dest=org.freedesktop.timedate1 /org/freedesktop/timedate1 org.freedesktop.DBus.Properties.Get string:"org.freedesktop.timedate1" string:"NTP"
+      register: ntp_enabled
+      changed_when: false
+      check_mode: no
+
     - name: enable timesyncing on timesyncd
       command: timedatectl set-ntp on
       notify:
@@ -31,6 +37,7 @@
         - disable chronyd
       when:
         - ntp_daemon_type == "timesyncd"
+        - not (ntp_enabled.stdout.split()[-1] | bool)
 
     - name: disable time sync using timesyncd if we are not using it
       command: timedatectl set-ntp no
