@@ -70,21 +70,25 @@ ceph_conf_local: false
 ############
 debian_package_dependencies:
   - python-pycurl
+  - parted
 
 centos_package_dependencies:
   - python-pycurl
   - epel-release
   - python-setuptools
   - libselinux-python
+  - parted
 
 redhat_package_dependencies:
   - python-pycurl
   - python-setuptools
+  - parted
 
 suse_package_dependencies:
   - python-pycurl
   - python-xml
   - python-setuptools
+  - parted
 
 # Whether or not to install the ceph-test package.
 ceph_test: false
