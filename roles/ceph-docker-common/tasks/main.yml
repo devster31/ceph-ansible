@@ -97,8 +97,8 @@
   set_fact:
     ceph_version: "{{ ceph_version.stdout.split(' ')[2] }}"
 
-- name: include release.yml
-  include_tasks: release.yml
+- name: import release.yml
+  import_tasks: release.yml
 
 # NOTE (jimcurtis): dirs_permissions.yml must precede fetch_configs.yml
 # # because it creates the directories needed by the latter.

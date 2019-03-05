@@ -32,15 +32,15 @@
   tags:
     with_pkg
 
-- name: install python-six
-  package:
-    name: python-six
-    state: present
-    update_cache: yes
-  when:
-    - ansible_distribution != 'Debian'
-  tags:
-    with_pkg
+# - name: install python-six
+#   package:
+#     name: python-six
+#     state: present
+#     update_cache: yes
+#   when:
+#     - ansible_distribution != 'Debian'
+#   tags:
+#     with_pkg
 
 - name: install python-docker-py on red hat / centos
   package:

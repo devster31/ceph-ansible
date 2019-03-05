@@ -33,7 +33,7 @@
 - name: disable transparent hugepage
   template:
     src: "tmpfiles_hugepage.j2"
-    dest: "/etc/tmpfiles.d/ceph_transparent_hugepage.conf"
+    dest: "/etc/tmpfiles.d/transparent_hugepage.conf"
     group: "root"
     owner: "root"
     mode: "0644"
