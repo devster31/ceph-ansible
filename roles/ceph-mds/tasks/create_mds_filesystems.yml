@@ -30,6 +30,7 @@
   delegate_to: "{{ groups[mon_group_name][0] }}"
   when:
     - check_existing_cephfs.rc != 0
+    - cephfs_pools | length > 0
 
 - name: assign application to cephfs pools
   command: "{{ hostvars[groups[mon_group_name][0]]['docker_exec_cmd'] | default('') }} ceph --cluster {{ cluster }} osd pool application enable {{ item }} {{ cephfs }}"
