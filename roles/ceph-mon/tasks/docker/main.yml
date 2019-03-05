@@ -10,11 +10,10 @@
   include_tasks: configure_ceph_command_aliases.yml
 
 - name: wait for monitor socket to exist
-  command: "{{ docker_exec_cmd }} sh -c 'stat /var/run/ceph/{{ cluster }}-mon.{{ ansible_hostname }}.asok || stat /var/run/ceph/{{ cluster }}-mon.{{ ansible_fqdn }}.asok'"
-  register: monitor_socket
-  retries: 5
-  delay: 15
-  until: monitor_socket.rc == 0
+  wait_for:
+    path: "/var/run/ceph/{{ cluster }}-mon.{{ ansible_hostname }}.asok"
+    state: present
+    delay: 15
 
 - name: ipv4 - force peer addition as potential bootstrap peer for cluster bringup - monitor_interface
   command: "{{ docker_exec_cmd }} ceph --admin-daemon /var/run/ceph/{{ cluster }}-mon.{{ monitor_name }}.asok add_bootstrap_peer_hint {{ hostvars[groups[mon_group_name][0]]['ansible_' + monitor_interface].ipv4.address }}"

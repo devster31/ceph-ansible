@@ -64,8 +64,7 @@
     daemon_reload: yes
 
 - name: wait for mds socket to exist
-  command: "{{ docker_exec_cmd }} sh -c 'stat /var/run/ceph/{{ cluster }}-mds.{{ ansible_hostname }}.asok || stat /var/run/ceph/{{ cluster }}-mds.{{ ansible_fqdn }}.asok'"
-  register: multi_mds_socket
-  retries: 5
-  delay: 15
-  until: multi_mds_socket.rc == 0
+  wait_for:
+    path: "/var/run/ceph/{{ cluster }}-mds.{{ ansible_hostname }}.asok"
+    state: present
+    delay: 15
