@@ -179,6 +179,7 @@
 - name: "pulling {{ ceph_docker_registry}}/{{ ceph_docker_image }}:{{ ceph_docker_image_tag }} image"
   command: "timeout {{ docker_pull_timeout }} docker pull {{ ceph_docker_registry}}/{{ ceph_docker_image }}:{{ ceph_docker_image_tag }}"
   changed_when: false
+  check_mode: false
   register: docker_image
   until: docker_image.rc == 0
   retries: "{{ docker_pull_retry }}"
@@ -189,6 +190,8 @@
 - name: "inspecting {{ ceph_docker_registry}}/{{ ceph_docker_image }}:{{ ceph_docker_image_tag }} image after pulling"
   command: "docker inspect {{ ceph_docker_registry}}/{{ ceph_docker_image }}:{{ ceph_docker_image_tag }}"
   failed_when: false
+  changed_when: false
+  check_mode: false
   register: image_inspect_after_pull
 
 - name: set_fact image_repodigest_after_pulling

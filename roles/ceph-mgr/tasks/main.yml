@@ -18,6 +18,8 @@
 
 - name: get enabled modules from ceph-mgr
   command: "{{ docker_exec_cmd_mgr | default('') }} ceph --cluster {{ cluster }} --format json mgr module ls"
+  changed_when: false
+  check_mode: false
   register: _ceph_mgr_modules
   delegate_to: "{{ groups[mon_group_name][0] }}"
 
@@ -28,6 +30,7 @@
 - name: set _disabled_ceph_mgr_modules fact
   set_fact:
     _disabled_ceph_mgr_modules: "{% if _ceph_mgr_modules.disabled_modules | length == 0 %}[]{% elif _ceph_mgr_modules.disabled_modules[0] | type_debug != 'dict' %}{{ _ceph_mgr_modules['disabled_modules'] }}{% else %}{{ _ceph_mgr_modules['disabled_modules'] | map(attribute='name') | list }}{% endif %}"
+  ignore_errors: "{{ ansible_check_mode }}"
 
 - name: disable ceph mgr enabled modules
   command: "{{ docker_exec_cmd_mgr | default('') }} ceph --cluster {{ cluster }} mgr module disable {{ item }}"
@@ -45,3 +48,4 @@
   delegate_to: "{{ groups[mon_group_name][0] }}"
   when:
     - (item in _disabled_ceph_mgr_modules or _disabled_ceph_mgr_modules == [])
+  ignore_errors: "{{ ansible_check_mode }}"

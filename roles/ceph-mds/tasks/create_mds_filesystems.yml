@@ -20,8 +20,9 @@
   command: "{{ hostvars[groups[mon_group_name][0]]['docker_exec_cmd'] | default('') }} ceph --cluster {{ cluster }} fs get {{ cephfs }}"
   register: check_existing_cephfs
   changed_when: false
-  delegate_to: "{{ groups[mon_group_name][0] }}"
   failed_when: false
+  check_mode: false
+  delegate_to: "{{ groups[mon_group_name][0] }}"
 
 - name: create ceph filesystem
   command: "{{ hostvars[groups[mon_group_name][0]]['docker_exec_cmd'] | default('') }} ceph --cluster {{ cluster }} fs new {{ cephfs }} {{ cephfs_metadata }} {{ cephfs_data }}"

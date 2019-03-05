@@ -76,6 +76,7 @@
     state: started
     enabled: yes
     daemon_reload: yes
+  ignore_errors: "{{ ansible_check_mode }}"
   with_items: "{{ devices if osd_scenario != 'lvm' and containerized_deployment else ((ceph_osd_ids.stdout | from_json).keys() | list) if osd_scenario == 'lvm' and not containerized_deployment else osd_ids_non_container.stdout_lines }}"
 
 - name: ensure systemd service override directory exists
