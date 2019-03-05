@@ -49,12 +49,3 @@
   when:
     - (item in _disabled_ceph_mgr_modules or _disabled_ceph_mgr_modules == [])
   ignore_errors: "{{ ansible_check_mode }}"
-
-- name: set mgr config
-  command: "{{ docker_exec_cmd_mgr | default('') }} ceph config {{ item }}"
-  loop: "{{ ceph_mgr_overrides }}"
-  changed_when: false
-  delegate_to: "{{ groups[mon_group_name][0] }}"
-  when:
-    - item in ceph_mgr_overrides
-  ignore_errors: "{{ ansible_check_mode }}"
