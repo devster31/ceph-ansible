@@ -29,7 +29,10 @@ ExecStart=/usr/bin/docker run --rm --net=host \
   -e CEPH_DAEMON=RGW \
   -e CLUSTER={{ cluster }} \
   --name=ceph-rgw-{{ ansible_hostname }} \
-  {{ ceph_rgw_docker_extra_env }} \
+  {% if ceph_rgw_docker_extra_env is defined and ceph_rgw_docker_extra_env is not none
+      and ceph_rgw_docker_extra_env | length > 0 -%}
+  {{ ceph_rgw_docker_extra_env | trim }} \
+  {% endif -%}
   {{ ceph_docker_registry }}/{{ ceph_docker_image }}:{{ ceph_docker_image_tag }}
 ExecStopPost=-/usr/bin/docker stop ceph-rgw-{{ ansible_hostname }}
 Restart=always

@@ -8,7 +8,7 @@ ExecStartPre=-/usr/bin/docker stop ceph-mgr-{{ ansible_hostname }}
 ExecStartPre=-/usr/bin/docker rm ceph-mgr-{{ ansible_hostname }}
 ExecStart=/usr/bin/docker run --rm --net=host \
   --memory={{ ceph_mgr_docker_memory_limit }} \
-  {% if ceph_docker_version.split('.')[0] is version_compare('13', '>=') -%}
+  {% if ceph_docker_version is version('1.13', '>=') -%}
   --cpus={{ ceph_mgr_docker_cpu_limit }} \
   {% else -%}
   --cpu-quota={{ ceph_mgr_docker_cpu_limit * 100000 }} \
@@ -25,7 +25,10 @@ ExecStart=/usr/bin/docker run --rm --net=host \
   -v /etc/localtime:/etc/localtime:ro \
   -e CLUSTER={{ cluster }} \
   -e CEPH_DAEMON=MGR \
-  {{ ceph_mgr_docker_extra_env }} \
+  {% if ceph_mgr_docker_extra_env is defined and ceph_mgr_docker_extra_env is not none
+      and ceph_mgr_docker_extra_env | length > 0 -%}
+  {{ ceph_mgr_docker_extra_env | trim }} \
+  {% endif -%}
   --name=ceph-mgr-{{ ansible_hostname }} \
   {{ ceph_docker_registry }}/{{ ceph_docker_image }}:{{ ceph_docker_image_tag }}
 ExecStopPost=-/usr/bin/docker stop ceph-mgr-{{ ansible_hostname }}
