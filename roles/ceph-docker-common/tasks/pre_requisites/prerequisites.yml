@@ -16,6 +16,7 @@
     update_cache: yes
   when:
     - ansible_distribution == 'Ubuntu'
+    - ceph_docker_exists.rc != 0
   tags:
     with_pkg
 
@@ -56,6 +57,7 @@
     state: present
   when:
     - ansible_distribution == 'Ubuntu'
+    - ceph_docker_exists.rc != 0
   tags:
     with_pkg
 

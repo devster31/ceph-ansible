@@ -1,4 +1,10 @@
 ---
+- name: check docker executable exists
+  shell: command -v docker
+  changed_when: false
+  register: ceph_docker_exists
+  check_mode: no
+
 - name: include system_checks.yml
   include_tasks: system_checks.yml
 
