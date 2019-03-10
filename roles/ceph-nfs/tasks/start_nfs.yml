@@ -26,11 +26,15 @@
 
 - name: create /etc/ganesha
   file:
-    path: /etc/ganesha
+    path: "{{ item }}"
     state: directory
     owner: root
     group: root
     mode: "0755"
+  loop:
+  - /etc/ganesha
+  - "{{ ceph_nfs_log_file | dirname }}"
+  - /var/lib/nfs/ganesha
 
 - name: generate ganesha configuration file
   action: config_template
@@ -43,6 +47,7 @@
     config_type: ini
   notify:
     - restart ceph nfss
+  ignore_errors: "{{ ansible_check_mode }}"
 
 - name: create exports directory
   file:
