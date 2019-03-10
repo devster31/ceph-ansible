@@ -45,6 +45,7 @@
   shell: |
     ls /var/lib/ceph/osd/ | sed 's/.*-//'
   register: osd_ids_non_container
+  changed_when: false
 
 - name: set_fact docker_exec_start_osd
   set_fact:
