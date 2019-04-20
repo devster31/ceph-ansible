@@ -28,13 +28,20 @@
 - name: disable transparent hugepage
   template:
     src: "tmpfiles_hugepage.j2"
-    dest: "/etc/tmpfiles.d/ceph_transparent_hugepage.conf"
+    dest: "/etc/tmpfiles.d/transparent_hugepage.conf"
     group: "root"
     owner: "root"
     mode: "0644"
     force: "yes"
     validate: "systemd-tmpfiles --create %s"
   when: disable_transparent_hugepage | bool
+
+- name: ensure no transparent hugepage setting is applied
+  file:
+    path: "/etc/tmpfiles.d/transparent_hugepage.conf"
+    state: absent
+  when:
+    - not disable_transparent_hugepage
 
 - name: get default vm.min_free_kbytes
   command: sysctl -b vm.min_free_kbytes
