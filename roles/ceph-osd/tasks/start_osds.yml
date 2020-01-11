@@ -16,6 +16,7 @@
     executable: /bin/bash
   changed_when: false
   failed_when: false
+  check_mode: false
   register: osd_ids_non_container
 
 - name: set_fact docker_exec_start_osd
@@ -26,6 +27,7 @@
   command: "{{ docker_exec_start_osd }} lvm list --format json"
   changed_when: false
   failed_when: false
+  check_mode: false
   register: ceph_osd_ids
 
 - name: include_tasks systemd.yml

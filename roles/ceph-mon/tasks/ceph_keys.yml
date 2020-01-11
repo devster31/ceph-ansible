@@ -9,6 +9,7 @@
     mon_status
     --format json
   register: ceph_health_raw
+  check_mode: false
   run_once: true
   until: >
     (ceph_health_raw.stdout | length > 0) and (ceph_health_raw.stdout | default('{}') | from_json)['state'] in ['leader', 'peon']

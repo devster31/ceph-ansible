@@ -13,6 +13,7 @@
 - name: wait for mds socket to exist
   command: "{{ container_binary }} exec ceph-mds-{{ ansible_hostname }} sh -c 'stat /var/run/ceph/{{ cluster }}-mds.{{ ansible_hostname }}.asok || stat /var/run/ceph/{{ cluster }}-mds.{{ ansible_fqdn }}.asok'"
   changed_when: false
+  check_mode: false
   register: multi_mds_socket
   retries: 5
   delay: 15
