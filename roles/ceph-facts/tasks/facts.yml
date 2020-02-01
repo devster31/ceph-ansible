@@ -62,6 +62,7 @@
     - name: find a running mon container
       command: "{{ container_binary }} ps -q --filter name=ceph-mon-{{ hostvars[item]['ansible_hostname'] }}"
       register: find_running_mon_container
+      changed_when: false
       failed_when: false
       run_once: true
       delegate_to: "{{ item }}"
