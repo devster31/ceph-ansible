@@ -35,7 +35,10 @@ ExecStart=/usr/bin/{{ container_binary }} run --rm --net=host \
   -e CLUSTER={{ cluster }} \
   -e CEPH_DAEMON=MDS \
   -e CONTAINER_IMAGE={{ ceph_docker_registry }}/{{ ceph_docker_image }}:{{ ceph_docker_image_tag }} \
-  {{ ceph_mds_docker_extra_env }} \
+  {% if ceph_mds_docker_extra_env is defined and ceph_mds_docker_extra_env is not none
+      and ceph_mds_docker_extra_env | length > 0 -%}
+  {{ ceph_mds_docker_extra_env | trim }} \
+  {% endif -%}
   --name=ceph-mds-{{ ansible_hostname }} \
   {{ ceph_docker_registry }}/{{ ceph_docker_image }}:{{ ceph_docker_image_tag }}
 {% if container_binary == 'podman' %}
